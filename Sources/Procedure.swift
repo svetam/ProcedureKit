@@ -133,7 +133,7 @@ open class Procedure: Operation, ProcedureProtocol {
 
     private var _errors = [Error]()
 
-    public var errors: [Error] {
+    open var errors: [Error] {
         return _stateLock.withCriticalScope { _errors }
     }
 
@@ -583,7 +583,7 @@ public extension Procedure {
 
 // MARK: Conditions
 
-public extension Procedure {
+extension Procedure {
 
     internal enum ConditionEvaluation {
         case pending, satisfied, ignored
@@ -695,7 +695,7 @@ public extension Procedure {
         super.removeDependency(directDependency)
     }
 
-    final override var dependencies: [Operation] {
+    final override public var dependencies: [Operation] {
         return Array(directDependencies.union(indirectDependencies))
     }
 
@@ -708,7 +708,7 @@ public extension Procedure {
      to a queue, or is waiting on dependencies.
      - parameter operation: a `Operation` instance.
      */
-    final override func addDependency(_ operation: Operation) {
+    open override func addDependency(_ operation: Operation) {
         precondition(state <= .executing, "Dependencies cannot be modified after execution has begun, current state: \(state).")
         add(directDependency: operation)
     }
@@ -723,7 +723,7 @@ public extension Procedure {
      to a queue, or is waiting on dependencies.
      - parameter operation: a `Operation` instance.
      */
-    final override func removeDependency(_ operation: Operation) {
+    override open func removeDependency(_ operation: Operation) {
         precondition(state <= .executing, "Dependencies cannot be modified after execution has begun, current state: \(state).")
         remove(directDependency: operation)
     }
@@ -733,7 +733,7 @@ public extension Procedure {
 
      - parameter condition: a `Condition` which must be satisfied for the procedure to be executed.
      */
-    func attach(condition: Condition) {
+    public func attach(condition: Condition) {
         assert(state < .executing, "Cannot modify conditions after operation has begun executing, current state: \(state).")
         conditions.insert(condition)
     }

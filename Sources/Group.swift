@@ -419,7 +419,7 @@ public extension GroupProcedure {
         return groupErrors.read { $0.attemptedRecoveryErrors }
     }
 
-    public override var errors: [Error] {
+    open override var errors: [Error] {
         get { return groupErrors.read { $0.fatal } }
         set {
             groupErrors.write { (ward: inout GroupErrors) in
